@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container>
         <v-card>
             <v-card-text>
                 <v-table>
@@ -20,7 +20,7 @@
                 </v-table>
             </v-card-text>
             <v-card-actions>
-                <v-btn @click="download" block color="teal">ダウンロード</v-btn>
+                <v-btn @click="download" block size="large" color="teal">ダウンロード</v-btn>
             </v-card-actions>
         </v-card>
 
@@ -44,4 +44,8 @@ const download = () => {
     a.click()
     window.URL.revokeObjectURL(url)
 }
+
+onMounted(() => {
+    download()
+})
 </script>

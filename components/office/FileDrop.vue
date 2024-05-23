@@ -1,11 +1,11 @@
 <template>
-    <v-sheet width="100%" class="pa-6 ma-auto border text-center" :color="isDragin ? 'teal-lighten-3' : ''" max-width="800"
-        height="200" @drop.prevent="(ev) => handleDrop(ev)" @dragover="ev => ev.preventDefault()"
-        @dragenter="handleDragStart" @dragend="handleDragEnd" @dragleave="handleDragEnd" @click="handleClick">
-        <label>クリックしてファイルを選択 または ファイルをドロップ</label>
+    <v-sheet width="100%" class="pa-6 ma-auto border text-center" :color="isDragin ? 'teal-lighten-3' : 'grey'"
+        max-width="800" height="200" @drop.prevent="(ev) => handleDrop(ev)" @dragover="ev => ev.preventDefault()"
+        @dragenter="handleDragStart" @dragend="(ev) => handleDragEnd(ev)" @dragleave="(ev) => handleDragEnd(ev)"
+        @click="handleClick">
+        <label class="text-h4" @click="handleClick">クリックしてファイルを選択<br />または<br />ファイルをドロップ</label>
         <input type="file" :id="isSrc ? 'file-input-src' : 'file-input-tgt'" multiple style="display: none"
             @change="ev => handleInput(ev)" />
-
     </v-sheet>
 </template>
 
@@ -48,11 +48,22 @@ const handleInput = (ev: Event) => {
 }
 
 const handleDragStart = () => {
+    console.log(0)
     isDragin.value = true
 }
 
-const handleDragEnd = () => {
-    isDragin.value = false
+const handleDragEnd = (ev: DragEvent) => {
+    if (ev === null) {
+        return
+    }
+    else {
+        const currentElement = ev.currentTarget as HTMLElement
+        if (!currentElement.contains(ev.relatedTarget as Node)) {
+            isDragin.value = false;
+        }
+    }
+
+    // isDragin.value = false
 }
 
 </script>

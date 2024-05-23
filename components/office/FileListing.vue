@@ -1,17 +1,18 @@
 <template>
     <v-list>
-        <v-list-item v-for="file, fx in infiles">
+        <v-list-item v-for="file, fx in infiles" :class="(file.name.endsWith('.docx') || file.name.endsWith('.docm')) ? 'file-word'
+            : (file.name.endsWith('.xlsx') || file.name.endsWith('.xlsm')) ? 'file-excel' : 'file-ppt'">
             <v-row>
-                <v-col>
-                    {{ fx }}
+                <v-col cols="1">
+                    {{ fx + 1 }}
                 </v-col>
                 <v-col>
                     {{ file.name }}
-                </v-col>
-                <v-col>
-                    <v-btn type="text" size="small" @click="() => handleUp(fx)">↑</v-btn>
-                    <v-btn type="text" size="small" @click="() => handleDown(fx)">↓</v-btn>
-                    <v-btn type="text" size="small" @click="() => handleRemove(fx)">×</v-btn>
+                </v-col cols="8">
+                <v-col cols="3">
+                    <v-btn class="mx-1" variant="text" size="small" @click="() => handleUp(fx)">↑</v-btn>
+                    <v-btn class="mx-1" variant="text" size="small" @click="() => handleDown(fx)">↓</v-btn>
+                    <v-btn class="mx-1" variant="text" size="small" @click="() => handleRemove(fx)">×</v-btn>
                 </v-col>
             </v-row>
         </v-list-item>
@@ -44,3 +45,20 @@ const handleRemove = (fx: number) => {
 }
 
 </script>
+
+<style>
+.file-word {
+    background-color: #3F51B5;
+    color: white;
+}
+
+.file-excel {
+    background-color: #388E3C;
+    color: white;
+}
+
+.file-ppt {
+    background-color: #EF6C00;
+    color: white;
+}
+</style>

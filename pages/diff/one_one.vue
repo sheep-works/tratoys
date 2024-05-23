@@ -8,27 +8,28 @@ const checkDiff = () => {
     texts.checkDiff()
     isChecked.value = true
 }
-
 </script>
-
 
 <template>
     <v-container>
-        <v-row>
-            <v-col>
-                <label>旧テキスト</label>
-                <v-textarea v-model="texts.src1" />
-            </v-col>
-            <v-col>
-                <label>新テキスト</label>
-                <v-textarea v-model="texts.src2" />
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col>
-                <v-btn @click="checkDiff" block color="teal">差分確認</v-btn>
-            </v-col>
-        </v-row>
+        <v-card elevation="20">
+            <v-card-title class="text-h5">差分抽出</v-card-title>
+            <v-card-text class="pa-3">
+                <v-row>
+                    <v-col>
+                        <label>旧テキスト</label>
+                        <v-textarea v-model="texts.src1" />
+                    </v-col>
+                    <v-col>
+                        <label>新テキスト</label>
+                        <v-textarea v-model="texts.src2" />
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+        <v-divider class="my-6" />
+        <v-btn @click="checkDiff" block size="large" color="teal">差分確認</v-btn>
+        <v-divider class="my-6" />
         <v-row v-if="isChecked">
             <v-col>
                 <v-card>

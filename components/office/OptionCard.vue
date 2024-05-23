@@ -1,69 +1,151 @@
 <template>
-    <v-card width="90%">
-        <v-card-title>オプション</v-card-title>
-        <v-card-text>
-            <v-tabs v-model="tab" color="teal" align-tabs="center">
-                <v-tab :value="1">一般</v-tab>
-                <v-tab :value="2">Word</v-tab>
-                <v-tab :value="3">Excel</v-tab>
-                <v-tab :value="4">PPT</v-tab>
-            </v-tabs>
-            <v-window v-model="tab">
-                <v-window-item :key="1" :value="1">
-                    <v-container fluid>
-                        <v-form>
-                            <v-container>
-                                <v-text-field label="出力ファイル名" v-model="outputName" required hide-details></v-text-field>
-                                <v-select :items="props.extentions" v-model="extention"></v-select>
-                                <v-checkbox label="文区切り" v-model="opt.exopt.opt.common.segmentation"></v-checkbox>
-                                <v-text-field label="文の切れ目" v-model="opt.exopt.opt.common.delimiters"
-                                    hide-details></v-text-field>
-                                <v-checkbox label="テキスト除外" v-model="opt.exopt.opt.common.excluding"></v-checkbox>
-                                <v-text-field label="除外パターン" v-model="opt.exopt.opt.common.excludePattern"
-                                    hide-details></v-text-field>
-                                <v-checkbox label="区切り文字" v-model="opt.exopt.opt.common.withSeparator"></v-checkbox>
-                            </v-container>
-                        </v-form>
-                    </v-container>
-                </v-window-item>
-                <v-window-item :key="2" :value="2">
-                    <v-container fluid>
-                        <v-form>
-                            <v-container>
-                                <v-checkbox label="修正後" v-model="opt.exopt.opt.office.word.afterRev"></v-checkbox>
-                                <v-checkbox label="修正後（訳文）" v-model="opt.exopt.opt.office.word.afterRev2"></v-checkbox>
-                            </v-container>
-                        </v-form>
-                    </v-container>
-                </v-window-item>
-                <v-window-item :key="3" :value="3">
-                    <v-container fluid>
-                        <v-form>
-                            <v-container>
-                                <v-checkbox label="非表示スライド読み取り"
-                                    v-model="opt.exopt.opt.office.excel.readHiddenSheet"></v-checkbox>
-                                <v-checkbox label="色付きセル読み取り"
-                                    v-model="opt.exopt.opt.office.excel.readFilledCell"></v-checkbox>
-                            </v-container>
-                        </v-form>
-                    </v-container>
-                </v-window-item>
-                <v-window-item :key="4" :value="4">
-                    <v-container fluid>
-                        <v-form>
-                            <v-container>
-                                <v-checkbox label="スライド読み取り" v-model="opt.exopt.opt.office.ppt.readSlide"></v-checkbox>
-                                <v-checkbox label="ノート読み取り" v-model="opt.exopt.opt.office.ppt.readNote"></v-checkbox>
-                            </v-container>
-                        </v-form>
-                    </v-container>
-                </v-window-item>
-            </v-window>
-        </v-card-text>
-        <v-card-actions>
-            <v-btn block @click="execute">実行</v-btn>
-        </v-card-actions>
-    </v-card>
+    <div>
+        <v-card elevation="20">
+            <v-card-title class="text-h5 pa-3">オプション</v-card-title>
+            <v-card-text>
+                <v-tabs v-model="tab" align-tabs="center" bg-color="grey">
+                    <v-tab :value="1">一般</v-tab>
+                    <v-divider vertical />
+                    <v-tab :value="2" bg-color="indigo">Word</v-tab>
+                    <v-divider vertical />
+                    <v-tab :value="3" color="green">Excel</v-tab>
+                    <v-divider vertical />
+                    <v-tab :value="4" color="orange">PPT</v-tab>
+                </v-tabs>
+                <v-window v-model="tab" class="px-10">
+                    <v-window-item :key="1" :value="1">
+                        <v-container fluid>
+                            <v-form>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">出力ファイル名</div>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-text-field v-model="outputName" required hide-details></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-select :items="props.extentions" v-model="extention"></v-select>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">文区切り</div>
+                                        </v-col>
+                                        <v-col cols="2">
+                                            <v-checkbox label="文で区切る"
+                                                v-model="opt.exopt.opt.common.segmentation"></v-checkbox>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field label="文の切れ目" v-model="opt.exopt.opt.common.delimiters"
+                                                hide-details></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">テキスト除外</div>
+                                        </v-col>
+                                        <v-col cols="2">
+                                            <v-checkbox label="設定する"
+                                                v-model="opt.exopt.opt.common.excluding"></v-checkbox>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field label="除外パターン" v-model="opt.exopt.opt.common.excludePattern"
+                                                hide-details></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">ページ区切り</div>
+                                        </v-col>
+                                        <v-col>
+                                            <v-checkbox label="挿入する"
+                                                v-model="opt.exopt.opt.common.withSeparator"></v-checkbox>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-form>
+                        </v-container>
+                    </v-window-item>
+                    <v-window-item :key="2" :value="2">
+                        <v-container fluid>
+                            <v-form>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">修正履歴</div>
+                                        </v-col>
+                                        <v-col>
+                                            <v-checkbox label="修正後を読み込む（原文）"
+                                                v-model="opt.exopt.opt.office.word.afterRev"></v-checkbox>
+                                        </v-col>
+                                        <v-col>
+                                            <v-checkbox label="修正後を読み込む（訳文）"
+                                                v-model="opt.exopt.opt.office.word.afterRev2"></v-checkbox>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-form>
+                        </v-container>
+                    </v-window-item>
+                    <v-window-item :key="3" :value="3">
+                        <v-container fluid>
+                            <v-form>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">非表示シート</div>
+                                        </v-col>
+                                        <v-col>
+                                            <v-checkbox label="読み込む"
+                                                v-model="opt.exopt.opt.office.excel.readHiddenSheet"></v-checkbox>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">色付きセル</div>
+                                        </v-col>
+                                        <v-col>
+                                            <v-checkbox label="読み込む"
+                                                v-model="opt.exopt.opt.office.excel.readFilledCell"></v-checkbox>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-form>
+                        </v-container>
+                    </v-window-item>
+                    <v-window-item :key="4" :value="4">
+                        <v-container fluid>
+                            <v-form>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">スライド</div>
+                                        </v-col>
+                                        <v-col>
+                                            <v-checkbox label="読み込む"
+                                                v-model="opt.exopt.opt.office.ppt.readSlide"></v-checkbox>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <div class="text-h6">ノート</div>
+                                        </v-col>
+                                        <v-col>
+                                            <v-checkbox label="読み込む"
+                                                v-model="opt.exopt.opt.office.ppt.readNote"></v-checkbox>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-form>
+                        </v-container>
+                    </v-window-item>
+                </v-window>
+            </v-card-text>
+        </v-card>
+        <v-divider class="my-6" />
+        <v-btn block size="large" @click="execute" color="teal">実行</v-btn>
+    </div>
 </template>
 
 <script setup lang="ts">

@@ -13,12 +13,19 @@ interface ResultData {
     errs: string[]
 }
 
+type TargetOption = "text" | "term"
+type DoubleStringArray = Array<[string, string]>
+
 export const useQAData = defineStore("qa", () => {
-    const dataText = ref("")
-    const termText = ref("")
+    const textPlain = ref("")
+    const termPlain = ref("")
     const results = ref<ResultData[]>([])
-    const terms: string[][] = [[], []]
+    const textSet = ref<DoubleStringArray>([["", ""]])
+    const termSet = ref<DoubleStringArray>([["", ""]])
     const regNums = new RegExp("[0-9.,]+", "g")
+
+    const textToUsePlain = ref(true)
+    const termsToUsePlain = ref(true)
 
     const selectedLang = ref('簡体字 → 日本語')
     const isCheckKana = ref(true)
@@ -37,52 +44,106 @@ export const useQAData = defineStore("qa", () => {
         kokiDict
     }
 
-    function setTerms() {
-        terms[0].length = 0
-        terms[1].length = 0
-        const lines = termText.value.split("\n")
-        lines.forEach(line => {
-            if (line !== "") {
-                const myTerms = line.split("\t")
-                const s = myTerms[0] || ""
-                const t = myTerms[1] || ""
-                terms[0].push(s.trim())
-                terms[1].push(t.trim())
-            }
-        })
+    function defineTarget(target: TargetOption): {
+        sw: Ref<boolean>
+        one: Ref<string>
+        two: Ref<DoubleStringArray>
+    } {
+        const sw = target === "text" ? textToUsePlain : termsToUsePlain
+        const one = target === "text" ? textPlain : termPlain
+        const two = target === "text" ? textSet : termSet
+        return { sw, one, two }
     }
 
+    function splitData(target: TargetOption) {
+        const { sw, one, two } = defineTarget(target)
+        if (!sw.value) {
+            return
+        }
+        else {
+            two.value.length = 0
+            const lines = one.value.split("\n")
+            lines.forEach(line => {
+                const val = line.replaceAll("    ", "\t").split("\t")
+                two.value.push([val[0]?.trim() || "", val[1]?.trim() || ""])
+            })
+            if (two.value.length === 0) {
+                two.value.push(["", ""])
+            }
+            sw.value = false
+        }
+    }
+
+    function mergeData(target: TargetOption) {
+        const { sw, one, two } = defineTarget(target)
+        if (sw.value) {
+            return
+        }
+        else {
+            const inText: string[] = []
+            two.value.forEach(val => {
+                if (val[0] !== "" && val[1] !== "") {
+                    inText.push(val.join("\t"))
+                }
+            })
+            one.value = inText.join("\n")
+            sw.value = true
+        }
+    }
+
+    function addLine(target: TargetOption) {
+        const { two } = defineTarget(target)
+        two.value.push(["", ""])
+    }
+
+    function removeLine(target: TargetOption, idx: number) {
+        const { two } = defineTarget(target)
+        if (idx > two.value.length) {
+            return
+        }
+        else if (two.value.length === 1) {
+            two.value[0][0] = ""
+            two.value[0][1] = ""
+        }
+        else {
+            two.value.splice(idx, 1)
+        }
+    }
+
+
+
     function exec(termQA: boolean = true, numQA: boolean = true) {
-        setTerms()
-        dataText.value = dataText.value.replaceAll("    ", "\t")
-        const lines = dataText.value.split("\n")
+        splitData("text")
+        splitData("term")
+        // splitTexts()
+        // splitTerms()
+        // dataText.value = dataText.value.replaceAll("    ", "\t")
+        // const lines = dataText.value.split("\n")
         const crts: Array<[string, string]> = []
         results.value.length = 0
-        lines.forEach(line => {
-            if (line !== "") {
-                const [s, t] = line.split("\t")
-                if (s !== undefined) {
-                    if (isSingle.value) {
-                        crts.push(["", s.trim()])
-                    }
-                    else if (t !== undefined) {
-                        crts.push([s.trim(), t.trim()])
-                    }
-                    else {
-                        crts.push([s.trim(), ""])
-                    }
+        textSet.value.forEach(line => {
+            const [s, t] = line
+            if (s !== "") {
+                if (isSingle.value) {
+                    crts.push(["", s.trim()])
+                }
+                else if (t !== undefined) {
+                    crts.push([s.trim(), t.trim()])
+                }
+                else {
+                    crts.push([s.trim(), ""])
                 }
             }
         })
         crts.forEach(line => {
             const inlineResult: string[] = []
-            if (termQA) {
+            if (termQA && !isSingle.value) {
                 const result = checkTerm(line[0], line[1])
                 if (result !== null) {
                     inlineResult.push(...result)
                 }
             }
-            if (numQA) {
+            if (numQA && !isSingle.value) {
                 const result = checkNum(line[0], line[1])
                 if (result !== null) {
                     inlineResult.push(...result)
@@ -118,9 +179,13 @@ export const useQAData = defineStore("qa", () => {
         })
     }
 
+    const onlyCheck = computed(() => {
+        return results.value.filter(val => val.errs[0] !== "なし")
+    })
+
     function checkTerm(src: string, tgt: string): string[] {
         const termRes: string[] = []
-        terms.forEach(term => {
+        termSet.value.forEach(term => {
             const [term1, term2] = term
             const regTerm1 = new RegExp(term1, "g")
             const matches1 = src.match(regTerm1)?.length || 0
@@ -226,9 +291,10 @@ export const useQAData = defineStore("qa", () => {
 
 
     return {
-        dataText, termText,
+        textPlain, termPlain, textSet, termSet,
+        splitData, mergeData, addLine, removeLine,
         selectedLang, isSingle, isCheckKana, isCheckBushu,
-        results, exec
+        results, exec, onlyCheck
     }
 })
 

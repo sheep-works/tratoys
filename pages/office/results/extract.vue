@@ -1,6 +1,6 @@
 <template>
-    <v-container fluid>
-        <v-btn @click="download" block color="teal">ダウンロード</v-btn>
+    <v-container>
+        <v-btn @click="download" block size="large" color="teal">ダウンロード</v-btn>
     </v-container>
 </template>
 
@@ -21,4 +21,8 @@ const download = () => {
     a.click()
     window.URL.revokeObjectURL(url)
 }
+
+onMounted(() => {
+    download()
+})
 </script>
