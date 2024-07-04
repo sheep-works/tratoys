@@ -22,10 +22,16 @@
             </div>
         </v-card-text>
         <v-card-subtitle class="text-right mr-10">
-            Ver. 0.0.2
+            Ver. {{ env.version }}
         </v-card-subtitle>
         <v-card-actions>
             <!-- <v-btn to="/test">テスト</v-btn> -->
         </v-card-actions>
     </v-card>
 </template>
+
+<script setup lang="ts">
+
+const { public: env } = useRuntimeConfig()
+
+</script>

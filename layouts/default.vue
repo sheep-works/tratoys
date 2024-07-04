@@ -24,6 +24,7 @@
                 <v-divider />
                 <v-list-item class="ml-6" to="/diff/one_one">1 vs 1</v-list-item>
                 <v-list-item class="ml-6" to="/diff/two_two">2 vs 2</v-list-item>
+                <v-list-item class="ml-6" to="/diff/batch">一括比較</v-list-item>
                 <v-divider class="my-6" />
                 <v-list-item prepend-icon="mdi-bug-check-outline" to="/qa">QA</v-list-item>
                 <v-divider />

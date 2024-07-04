@@ -3,6 +3,11 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import genSitemap from './scripts/genSitemap'
 
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      version: require("./package.json").version
+    }
+  },
   app: {
     baseURL: "/tratoys/",
     head: {

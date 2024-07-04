@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useDifftext } from '../../store/difftext';
+import ExportBtn from '../../components/diff/ExportBtn.vue';
 
 const texts = useDifftext()
 const isChecked = ref(false)
@@ -53,6 +54,7 @@ const checkDiff = () => {
                     <p v-html=texts.tgt3 />
                 </v-card>
             </v-col>
+            <ExportBtn mode="2vs2" />
         </v-row>
     </v-container>
 </template>

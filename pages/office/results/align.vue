@@ -1,12 +1,15 @@
 <template>
     <v-container>
         <v-btn @click="download" block size="large" color="teal">ダウンロード</v-btn>
+        <v-btn @click="toEdit" block size="large" color="teal">編集へ</v-btn>
     </v-container>
 </template>
 
 <script setup lang="ts">
 import { useOptions } from '~/store/options';
 import { useResults } from '~/store/results';
+import { useAlign } from "~/store/align"
+
 
 const results = useResults()
 const options = useOptions()
@@ -20,6 +23,18 @@ const download = () => {
     a.download = options.exopt.output;
     a.click()
     window.URL.revokeObjectURL(url)
+}
+
+const toEdit = () => {
+    const align = useAlign()
+    if (results.result?.office) {
+        align.setRaw(results.result.office)
+        const router = useRouter()
+        router.push("./edit")
+    }
+    else {
+        return
+    }
 }
 
 onMounted(() => {

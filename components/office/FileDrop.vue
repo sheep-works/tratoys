@@ -20,10 +20,6 @@ const props = defineProps<{
     filetype: 'Office' | 'CAT'
 }>()
 
-const checkFiles = () => {
-    console.log(files)
-}
-
 const handleClick = () => {
     const inputTagId = props.isSrc ? "file-input-src" : "file-input-tgt"
     document.getElementById(inputTagId)?.click()
@@ -33,7 +29,6 @@ const handleDrop = (ev: DragEvent) => {
     isDragin.value = false;
     ev.preventDefault()
     if (ev.dataTransfer !== undefined && ev.dataTransfer !== null) {
-        console.log(ev.dataTransfer.files)
         files.addList([...ev.dataTransfer.files], props.filetype, props.isSrc)
     }
 }
@@ -48,7 +43,6 @@ const handleInput = (ev: Event) => {
 }
 
 const handleDragStart = () => {
-    console.log(0)
     isDragin.value = true
 }
 
